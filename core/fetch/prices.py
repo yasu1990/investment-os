@@ -11,19 +11,7 @@ def fetch_price_data(
 ) -> pd.DataFrame:
     """
     Fetch daily price and volume data for a given ticker.
-
-    Parameters
-    ----------
-    ticker : str
-        Stock ticker (e.g. '7203.T')
-    years : int
-        Lookback period in years
-
-    Returns
-    -------
-    pd.DataFrame
-        DataFrame with columns:
-        ['date', 'open', 'high', 'low', 'close', 'volume']
+    Always returns a flat-column DataFrame.
     """
 
     end_date = datetime.today()
@@ -33,11 +21,17 @@ def fetch_price_data(
         ticker,
         start=start_date.strftime("%Y-%m-%d"),
         end=end_date.strftime("%Y-%m-%d"),
-        progress=False
+        progress=False,
+        auto_adjust=False
     )
 
     if df.empty:
         raise ValueError(f"No price data fetched for ticker: {ticker}")
+
+    # ===== ここが重要 =====
+    # MultiIndex をフラット化
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
 
     df = df.reset_index()
 
