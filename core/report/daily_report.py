@@ -1,5 +1,3 @@
-# core/report/daily_report.py
-
 import pandas as pd
 
 from core.fetch.prices import fetch_price_data
@@ -9,6 +7,7 @@ from core.features.volume_trend import calculate_volume_trend
 from core.features.historical_spike import has_historical_spike
 from core.scoring.ten_bagger import calculate_ten_bagger_score, load_weights
 from core.universe.company_name import get_company_name
+from core.universe.sector import get_sector
 
 
 def generate_daily_report(
@@ -38,6 +37,7 @@ def generate_daily_report(
             results.append({
                 "ticker": ticker,
                 "company_name": get_company_name(ticker),
+                "sector": get_sector(ticker),
                 "price_position": round(price_pos, 2),
                 "volume_ratio": round(volume_ratio, 2),
                 "volume_trend": volume_trend,
